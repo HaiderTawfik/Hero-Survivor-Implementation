@@ -8,7 +8,7 @@ UCID: 30097912
 @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
 
 :root {
-    --pixel-size: 4px;
+    --pixel-size: 1px;
     --grid-cell: calc( var(--pixel-size) * 16);
     --pixel-size-boss: calc( var(--pixel-size) * 3);
     --grid-cell-boss: calc( var(--pixel-size-boss) * 16);
@@ -16,6 +16,7 @@ UCID: 30097912
 
  html, body {
     height: 100%;
+    width: 100%;
     padding:0;
     margin:0;
     font-family: 'MedievalSharp', cursive;
@@ -27,7 +28,7 @@ UCID: 30097912
  }
  
  .map {
-    background-image: url("assets/jawbreaker_sample.png");
+    background-image: url("assets/map.png");
     background-size: 100%;
     width: 100%;
     height: 100%;
@@ -278,3 +279,22 @@ UCID: 30097912
     width: calc( var(--grid-cell)* 2);
     height: calc(var(--grid-cell)* 2);
 }
+
+.flex {
+   display: flex;
+   flex-direction: row;
+   width: 100%;
+   height: 100%;
+}
+
+#canvasp1 {
+   border-right: 1px solid black;
+   width: calc(50% - 1px);
+   height: auto;
+}
+
+#canvasp2 {
+   width: 50%;
+   height: auto;
+}
+

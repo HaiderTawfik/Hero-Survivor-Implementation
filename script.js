@@ -7,14 +7,43 @@ UCID: 30097912
 /*
 player class will include things such as their health, attack, defense, etc, and current x, y position, boolean is invicinble for invicibility frames.
 */
-class player{
-    constructor(health, attack, defense, x, y, isInvincible){
+class Player{
+    constructor(health, attack, defense, x, y, isInvincible, context){
+        this.health = health;
+        this.attack = attack;
+        this.defense = defense;
+        this.x = x;
+        this.y = y;
+        this.isInvincible = isInvincible;
+        this.context = context;
     }
     //function to move player
-    move(x, y){
+    draw() {
+        
     }
 }
 
+class Background {
+    constructor(x, y, image, context){
+        this.x = x;
+        this.y = y;
+        this.image = image; 
+        this.context = context
+    }
+    draw() {
+        this.context.drawImage(this.image, this.x, this.y);
+    }
+
+}
+
+const player1 = new Player({
+    health:100,
+    attack:10,
+    defense:10,
+    x:0,
+    y:0,
+    isInvincible:false
+});
 
 /*
 Intialize player objects
@@ -65,6 +94,141 @@ class wave{
 }
 
 
+const canvasp1 = document.getElementById('canvasp1');
+const c1 = canvasp1.getContext('2d');
+const canvasp2 = document.getElementById('canvasp2');
+const c2 = canvasp2.getContext('2d');
+
+canvasp1.width = 700;
+canvasp1.height = 700;
+
+
+canvasp2.width = 700;
+canvasp2.height = 700;
+
+
+const image = new Image();
+image.src = 'assets/map.png';
+
+const p1Image = new Image();
+p1Image.src = 'assets/hero.png';
+
+const offset = {
+    x: -64,
+    y: -64 * 2
+}
+const p1background = new Background(offset.x, offset.y, image, c1);
+const keysPressed = {
+    w: false,
+    a: false,
+    s: false,
+    d: false
+};
+
+const mapCollision = [];
+for (let i = 0; i < collisions.length; i+= 52) {
+    mapCollision.push(collisions.slice(i, i+52));
+}
+class Boundary {
+    constructor(x, y, width, height) {
+        this.x = x;
+        this.y = y;
+        this.width = width; 
+        this.height = height;
+    }
+    draw() {
+        c1.beginPath();
+        c1.rect(this.x, this.y, this.width, this.height);
+        c1.stroke();
+    }
+}
+
+const boundaries = [];
+for (let i = 0; i < mapCollision.length; i++) {
+    for (let j = 0; j < mapCollision[i].length; j++) {
+        if (mapCollision[i][j] === 1097) {
+            boundaries.push(new Boundary(j*64 + offset.x, i*64 + offset.y, 64, 64));
+        }
+    }
+}
+
+const testBoundary = new Boundary(0, 0, 64, 64);
+const itemsToMove = [p1background, testBoundary];
+function gameLoop() {
+    window.requestAnimationFrame(gameLoop);
+    p1background.draw();
+    testBoundary.draw();
+    // boundaries.forEach(boundary => {
+    //     boundary.draw();
+    // });
+    c1.drawImage(
+        p1Image,
+        0,
+        0,
+        p1Image.width/3,
+        p1Image.height/4, 
+        4 * 16, 
+        8 * 16,
+        p1Image.width/2,
+        p1Image.height/2, 
+    );
+    c2.drawImage(image, -(135*16), -(45*16));
+    if(keysPressed.w) {
+        itemsToMove.forEach(item => {
+            item.y += 2;
+        });
+    }
+    if(keysPressed.a) {
+        itemsToMove.forEach(item => {
+            item.x += 2;
+        });
+    }
+    if(keysPressed.s) {
+        itemsToMove.forEach(item => {
+            item.y -= 2;
+        });
+    }
+    if(keysPressed.d) {
+        itemsToMove.forEach(item => {
+            item.x -= 2;
+        });
+    }
+}
+gameLoop();
+
+window.addEventListener('keydown', function(e) {
+    switch(e.key) {
+        case 'w': 
+            keysPressed.w = true;
+            break;
+        case 'a':
+            keysPressed.a = true;
+            break;
+        case 's':
+            keysPressed.s = true;
+            break;
+        case 'd':
+            keysPressed.d = true;
+            break;
+    }
+});
+
+window.addEventListener('keyup', function(e) {
+    switch(e.key) {
+        case 'w': 
+            keysPressed.w = false;
+            break;
+        case 'a':
+            keysPressed.a = false;
+            break;
+        case 's':
+            keysPressed.s = false;
+            break;
+        case 'd':
+            keysPressed.d = false;
+            break;
+    }
+});
 /*
 function to detect collision between chest and player, call playerBuff to give the players a buff
 */
@@ -144,12 +308,56 @@ function detectCollisionEntityWall(){
 /*
 add listeners for player movement, attacks, then call movePlayer1 or movePlayer2
 */
+var character = document.querySelector(".character");
+var x = 0;
+var y = 0;
+var speed = 2; //How fast the character moves in pixels per frame
 
-/*
-move player1 with animation function
-*/
-function movePlayer1(direction){
-}
+
+
+// window.addEventListener("keydown", (e) => {
+//     console.log(e.key);
+//     switch (e.key) {
+//       case "w":
+//         movePlayer1("up");
+//         break;
+//       case "a":
+//         movePlayer1("left");
+//         break;
+//       case "s":
+//         movePlayer1("down");
+//         break;
+//       case "d":
+//         movePlayer1("right");
+//         break;
+//     }
+//   });
+
+
+
+
+// /*
+// move player1 with animation function
+// */
+// function movePlayer1(direction){
+//     var pixelSize = parseInt(
+//         getComputedStyle(document.documentElement).getPropertyValue('--pixel-size')
+//      );
+     
+//         if (direction === "right") {x += speed;}
+//         if (direction == "left") {x -= speed;}
+//         if (direction == "down") {y += speed;}
+//         if (direction == "up") {y -= speed;}
+//         character.setAttribute("facing", direction);
+
+     
+//      if (x < -8) { x = -8; }
+//      if (x > (screen.width-8)) { x = screen.width-8; }
+//      if (y < 0) { y = 0; }
+//      if (y > screen.height - 8) { y = screen.height - 8; }
+     
+//      character.style.transform = `translate3d( ${x*pixelSize}px, ${y*pixelSize}px, 0 )`;  
+// }
 
 /*
 move player2 with animation function
