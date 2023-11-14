@@ -8,7 +8,7 @@ UCID: 30097912
 player class will include things such as their health, attack, defense, etc, and current x, y position, boolean is invicinble for invicibility frames.
 */
 class Player{
-    constructor(health, attack, defense, x, y, isInvincible, context){
+    constructor(health, attack, defense, x, y, isInvincible, context, image){
         this.health = health;
         this.attack = attack;
         this.defense = defense;
@@ -16,10 +16,27 @@ class Player{
         this.y = y;
         this.isInvincible = isInvincible;
         this.context = context;
+        this.image = image;
+        this.width = this.image.width/2;
+        this.height = this.image.height/2;
     }
     //function to move player
+    move(x, y){
+        this.x = x;
+        this.y = y;
+    }
     draw() {
-        
+        this.context.drawImage(
+            this.image,
+            0,
+            0,
+            this.image.width/3,
+            this.image.height/4, 
+            4 * 16, 
+            8 * 16,
+            this.image.width/2,
+            this.image.height/2, 
+        );
     }
 }
 
@@ -36,14 +53,7 @@ class Background {
 
 }
 
-const player1 = new Player({
-    health:100,
-    attack:10,
-    defense:10,
-    x:0,
-    y:0,
-    isInvincible:false
-});
+
 
 /*
 Intialize player objects
@@ -114,10 +124,11 @@ const p1Image = new Image();
 p1Image.src = 'assets/hero.png';
 
 const offset = {
-    x: -64,
+    x: -64 * 2,
     y: -64 * 2
 }
 const p1background = new Background(offset.x, offset.y, image, c1);
+const player1 = new Player(100, 10, 10, 4 * 16, 8 * 16, false, c1, p1Image);
 const keysPressed = {
     w: false,
     a: false,
@@ -152,46 +163,90 @@ for (let i = 0; i < mapCollision.length; i++) {
     }
 }
 
-const testBoundary = new Boundary(0, 0, 64, 64);
-const itemsToMove = [p1background, testBoundary];
+// const testBoundary = new Boundary(128, 128, 64, 64);
+const itemsToMove = [p1background, ...boundaries];
+
+/*
+function detect collision with entity and walls
+*/
+function detectCollisionEntityWall(entity1, wall){
+    return(entity1.x + entity1.width >= wall.x &&
+    entity1.x <= wall.x + wall.width &&
+    entity1.y <= wall.y + wall.height &&
+    entity1.y + entity1.height >= wall.y);
+}
 function gameLoop() {
     window.requestAnimationFrame(gameLoop);
     p1background.draw();
-    testBoundary.draw();
-    // boundaries.forEach(boundary => {
-    //     boundary.draw();
-    // });
-    c1.drawImage(
-        p1Image,
-        0,
-        0,
-        p1Image.width/3,
-        p1Image.height/4, 
-        4 * 16, 
-        8 * 16,
-        p1Image.width/2,
-        p1Image.height/2, 
-    );
+    // testBoundary.draw();
+    player1.draw();
+    boundaries.forEach(boundary => {
+        boundary.draw();
+    });
     c2.drawImage(image, -(135*16), -(45*16));
+    // if(detectCollisionEntityWall(player1, testBoundary)) {
+    //     console.log('collision');
+    // }
+    let canMove = true;
     if(keysPressed.w) {
-        itemsToMove.forEach(item => {
-            item.y += 2;
+        boundaries.forEach(boundary => {
+            boundary.y += 2;
+            if(detectCollisionEntityWall(player1, boundary)) {
+                console.log('collision');
+                canMove = false;
+            }
+            boundary.y -= 2;
         });
+        if(canMove) {
+            itemsToMove.forEach(item => {
+                item.y += 2;
+            });
+        }
     }
     if(keysPressed.a) {
-        itemsToMove.forEach(item => {
-            item.x += 2;
+        boundaries.forEach(boundary => {
+            boundary.x += 2;
+            if(detectCollisionEntityWall(player1, boundary)) {
+                console.log('collision');
+                canMove = false;
+            }
+            boundary.x -= 2;
         });
+        if(canMove) {
+            itemsToMove.forEach(item => {
+                item.x += 2;
+            });
+        }
     }
     if(keysPressed.s) {
-        itemsToMove.forEach(item => {
-            item.y -= 2;
+        boundaries.forEach(boundary => {
+            boundary.y -= 2;
+            if(detectCollisionEntityWall(player1, boundary)) {
+                console.log('collision');
+                canMove = false;
+            }
+            boundary.y += 2;
         });
+        if(canMove) {
+            itemsToMove.forEach(item => {
+                item.y -= 2;
+            });
+        }
     }
     if(keysPressed.d) {
-        itemsToMove.forEach(item => {
-            item.x -= 2;
+        boundaries.forEach(boundary => {
+            boundary.x -= 2;
+            if(detectCollisionEntityWall(player1, boundary)) {
+                console.log('collision');
+                canMove = false;
+            }
+            boundary.x += 2;
         });
+        if(canMove) {
+            itemsToMove.forEach(item => {
+                item.x -= 2;
+            });
+        }
     }
 }
 gameLoop();
@@ -299,11 +354,7 @@ playerswing sword function + animation
 function playerSwingSword(player){
 }
 
-/*
-function detect collision with entity and walls
-*/
-function detectCollisionEntityWall(){
-}
+
 
 /*
 add listeners for player movement, attacks, then call movePlayer1 or movePlayer2
@@ -315,49 +366,12 @@ var speed = 2; //How fast the character moves in pixels per frame
 
 
 
-// window.addEventListener("keydown", (e) => {
-//     console.log(e.key);
-//     switch (e.key) {
-//       case "w":
-//         movePlayer1("up");
-//         break;
-//       case "a":
-//         movePlayer1("left");
-//         break;
-//       case "s":
-//         movePlayer1("down");
-//         break;
-//       case "d":
-//         movePlayer1("right");
-//         break;
-//     }
-//   });
 
 
 
 
-// /*
-// move player1 with animation function
-// */
-// function movePlayer1(direction){
-//     var pixelSize = parseInt(
-//         getComputedStyle(document.documentElement).getPropertyValue('--pixel-size')
-//      );
-     
-//         if (direction === "right") {x += speed;}
-//         if (direction == "left") {x -= speed;}
-//         if (direction == "down") {y += speed;}
-//         if (direction == "up") {y -= speed;}
-//         character.setAttribute("facing", direction);
 
-     
-//      if (x < -8) { x = -8; }
-//      if (x > (screen.width-8)) { x = screen.width-8; }
-//      if (y < 0) { y = 0; }
-//      if (y > screen.height - 8) { y = screen.height - 8; }
-     
-//      character.style.transform = `translate3d( ${x*pixelSize}px, ${y*pixelSize}px, 0 )`;  
-// }
+
 
 /*
 move player2 with animation function
