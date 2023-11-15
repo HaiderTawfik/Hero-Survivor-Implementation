@@ -32,8 +32,8 @@ class Player{
             0,
             this.image.width/3,
             this.image.height/4, 
-            4 * 16, 
-            8 * 16,
+            this.x, 
+            this.y,
             this.image.width/2,
             this.image.height/2, 
         );
@@ -66,11 +66,96 @@ Intialize possible buff's array
 /*
 enemy class, include things such as health, attack, defense, etc, and current x, y position.
 */
-class enemy{
-    constructor(health, attack, defense, x, y){
+class Enemy{
+    constructor(health, attack, defense, x, y, image, context){
+        this.health = health;
+        this.attack = attack;
+        this.defense = defense;
+        this.x = x;
+        this.y = y;
+        this.image = image;
+        this.context = context;
+        this.width = this.image.width/2;
+        this.height = this.image.height/2;
     }
     //function to move enemy
-    move(x, y){
+    moveTowardsPlayer(player, boundaries) {
+        const speed = 1; 
+    
+        let targetX = player.x;
+        let targetY = player.y;
+    
+        if (this.x < player.x) {
+            targetX = Math.min(targetX, this.x + speed);
+        } else if (this.x > player.x) {
+            targetX = Math.max(targetX, this.x - speed);
+        }
+    
+        if (this.y < player.y) {
+            targetY = Math.min(targetY, this.y + speed);
+        } else if (this.y > player.y) {
+            targetY = Math.max(targetY, this.y - speed);
+        }
+        const potentialCollision = {
+            x: targetX,
+            y: targetY,
+            width: this.image.width/2,
+            height: this.image.height/2
+        };
+    
+        let canMove = true;
+    
+        boundaries.forEach(boundary => {
+            if (detectCollisionEntityWall(potentialCollision, boundary)) {
+                canMove = false;
+            }
+        });
+    
+        if (canMove) {
+            this.x = targetX;
+            this.y = targetY;
+        } else {
+            potentialCollision.y = this.y;
+            canMove = true;
+    
+            boundaries.forEach(boundary => {
+                if (detectCollisionEntityWall(potentialCollision, boundary)) {
+                    canMove = false;
+                }
+            });
+    
+            if (canMove) {
+                this.x = targetX;
+            } else {
+                potentialCollision.x = this.x;
+                potentialCollision.y = targetY;
+                canMove = true;
+    
+                boundaries.forEach(boundary => {
+                    if (detectCollisionEntityWall(potentialCollision, boundary)) {
+                        canMove = false;
+                    }
+                });
+    
+                if (canMove) {
+                    this.y = targetY;
+                }
+            }    
+        }
+        detectCollisionPlayerEnemy(player1, this);
+    }
+    draw() {
+        this.context.drawImage(
+            this.image,
+            0,
+            0,
+            this.image.width/3,
+            this.image.height/4, 
+            this.x, 
+            this.y,
+            this.image.width/2,
+            this.image.height/2, 
+        );
     }
 }
 
@@ -123,12 +208,17 @@ image.src = 'assets/map.png';
 const p1Image = new Image();
 p1Image.src = 'assets/hero.png';
 
+const skeletonImage = new Image();
+skeletonImage.src = 'assets/skeleton.png';
+
+
 const offset = {
     x: -64 * 2,
     y: -64 * 2
 }
 const p1background = new Background(offset.x, offset.y, image, c1);
-const player1 = new Player(100, 10, 10, 4 * 16, 8 * 16, false, c1, p1Image);
+const player1 = new Player(100, 10, 10, 8 * 32, 6 * 32, false, c1, p1Image);
+const testEnemy = new Enemy(100, 10, 10, 2 * 32, 2 * 32, skeletonImage, c1);
 const keysPressed = {
     w: false,
     a: false,
@@ -162,9 +252,10 @@ for (let i = 0; i < mapCollision.length; i++) {
         }
     }
 }
-
+const enemies = [];
+enemies.push(testEnemy);
 // const testBoundary = new Boundary(128, 128, 64, 64);
-const itemsToMove = [p1background, ...boundaries];
+const itemsToMove = [p1background, ...boundaries, ...enemies];
 
 /*
 function detect collision with entity and walls
@@ -180,6 +271,20 @@ function gameLoop() {
     p1background.draw();
     // testBoundary.draw();
     player1.draw();
+    testEnemy.moveTowardsPlayer(player1, boundaries);
+    // if(testEnemy.x< player1.x) {
+    //     testEnemy.x += 1;
+    // } else if (testEnemy.x > player1.x) {
+    //     testEnemy.x -= 1;
+    // } else if (testEnemy.y < player1.y) {
+    //     testEnemy.y += 1;
+    // } else if (testEnemy.y > player1.y) {
+    //     testEnemy.y -= 1;
+    // }
+    testEnemy.draw();
+    // console.log("Enemy:", testEnemy.x, testEnemy.y);
+    // console.log("Background", player1.x, p1background.y)
+
     boundaries.forEach(boundary => {
         boundary.draw();
     });
@@ -192,7 +297,7 @@ function gameLoop() {
         boundaries.forEach(boundary => {
             boundary.y += 2;
             if(detectCollisionEntityWall(player1, boundary)) {
-                console.log('collision');
+                // console.log('collision');
                 canMove = false;
             }
             boundary.y -= 2;
@@ -207,7 +312,7 @@ function gameLoop() {
         boundaries.forEach(boundary => {
             boundary.x += 2;
             if(detectCollisionEntityWall(player1, boundary)) {
-                console.log('collision');
+                // console.log('collision');
                 canMove = false;
             }
             boundary.x -= 2;
@@ -222,7 +327,7 @@ function gameLoop() {
         boundaries.forEach(boundary => {
             boundary.y -= 2;
             if(detectCollisionEntityWall(player1, boundary)) {
-                console.log('collision');
+                // console.log('collision');
                 canMove = false;
             }
             boundary.y += 2;
@@ -237,7 +342,7 @@ function gameLoop() {
         boundaries.forEach(boundary => {
             boundary.x -= 2;
             if(detectCollisionEntityWall(player1, boundary)) {
-                console.log('collision');
+                // console.log('collision');
                 canMove = false;
             }
             boundary.x += 2;
@@ -306,6 +411,12 @@ change the player health bar visual aswell
 */
 function decreasePlayerHealth(player){
 }
+function detectCollisionEntityEntity (player, enemy) {
+    return(player.x + player.width >= enemy.x &&
+    player.x <= enemy.x + enemy.width &&
+    player.y <= enemy.y + enemy.height &&
+    player.y + player.height >= enemy.y);
+}
 
 /*
 function to detect collision with player and enemy
@@ -316,7 +427,19 @@ Enemy that hit the player has chance to apply a debuff to the player depending o
 skeltetons will have a chance to slow (decrease their speed),
 ghosts can poison (decrease their health over time), etc.
 */
-function detectCollisionPlayerEnemy(player){
+function detectCollisionPlayerEnemy(player, enemy){
+    if (player.isInvincible) {
+        return;
+    } else {
+        if (detectCollisionEntityEntity(player, enemy)) {
+            decreasePlayerHealth(player);
+            console.log('hit');
+            player.isInvincible = true;
+            setTimeout(() => {
+                player.isInvincible = false;
+            }, 1000);
+        }
+    }
 }
 
 /*
