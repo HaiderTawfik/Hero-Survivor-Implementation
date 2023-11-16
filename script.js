@@ -31,67 +31,63 @@ class Player{
     }
     //function to swing sword
     swingSword() {
-
-            this.context.save();
-            if(this.direction === 3) {
-                this.context.translate(this.x + this.width / 2, this.y + this.height / 2);
-                this.context.rotate(-Math.PI / 2);
-                this.context.drawImage(
-                    slashImage,
-                    0,
-                    0,
-                    slashImage.width / 6,
-                    slashImage.height,
-                    8,
-                    -100,
-                    this.width,
-                    this.height * 3
-                );
-            } else if (this.direction === 0) {
-                this.context.translate(this.x + this.width / 2, this.y + this.height / 2);
-                this.context.rotate(Math.PI / 2);
-                this.context.drawImage(
-                    slashImage,
-                    0,
-                    0,
-                    slashImage.width / 6,
-                    slashImage.height,
-                    -8,
-                    -100,
-                    this.width,
-                    this.height * 3
-                );
-            } else if (this.direction === 1) {
-                this.context.translate(this.x + this.width / 2, this.y + this.height / 2);
-                this.context.rotate(Math.PI);
-                this.context.drawImage(
-                    slashImage,
-                    0,
-                    0,
-                    slashImage.width / 6,
-                    slashImage.height,
-                    -this.width * 0.75,
-                    -this.height * 0.65,
-                    this.width * 2,
-                    this.height
-                );
-            } else if (this.direction === 2) {
-                this.context.drawImage(
-                    slashImage,
-                    0,
-                    0,
-                    slashImage.width / 6,
-                    slashImage.height,
-                    this.x,
-                    this.y + this.height / 16,
-                    this.width * 2,
-                    this.height
-                );
-            }
-    
-    
-            this.context.restore();
-        
+        this.context.save();
+        if(this.direction === 3) {
+            this.context.translate(this.x + this.width / 2, this.y + this.height / 2);
+            this.context.rotate(-Math.PI / 2);
+            this.context.drawImage(
+                slashImage,
+                0,
+                0,
+                slashImage.width / 6,
+                slashImage.height,
+                8,
+                -100,
+                this.width,
+                this.height * 3
+            );
+        } else if (this.direction === 0) {
+            this.context.translate(this.x + this.width / 2, this.y + this.height / 2);
+            this.context.rotate(Math.PI / 2);
+            this.context.drawImage(
+                slashImage,
+                0,
+                0,
+                slashImage.width / 6,
+                slashImage.height,
+                -8,
+                -100,
+                this.width,
+                this.height * 3
+            );
+        } else if (this.direction === 1) {
+            this.context.translate(this.x + this.width / 2, this.y + this.height / 2);
+            this.context.rotate(Math.PI);
+            this.context.drawImage(
+                slashImage,
+                0,
+                0,
+                slashImage.width / 6,
+                slashImage.height,
+                -this.width * 0.75,
+                -this.height * 0.65,
+                this.width * 2,
+                this.height
+            );
+        } else if (this.direction === 2) {
+            this.context.drawImage(
+                slashImage,
+                0,
+                0,
+                slashImage.width / 6,
+                slashImage.height,
+                this.x,
+                this.y + this.height / 16,
+                this.width * 2,
+                this.height
+            );
+        }
+        this.context.restore();
     }
     
     
@@ -147,7 +143,7 @@ Intialize possible buff's array
 enemy class, include things such as health, attack, defense, etc, and current x, y position.
 */
 class Enemy{
-    constructor(health, attack, defense, x, y, image, context){
+    constructor(maxHealth, health, attack, defense, x, y, image, context){
         this.health = health;
         this.attack = attack;
         this.defense = defense;
@@ -161,6 +157,7 @@ class Enemy{
         this.animationFrame = 0;
         this.moving = true;
         this.elapsed = 0;
+        this.maxHealth = maxHealth;
     }
     //function to move enemy
     moveTowardsPlayer(player, boundaries) {
@@ -259,6 +256,20 @@ class Enemy{
             this.image.width/2,
             this.image.height/2, 
         );
+        
+
+        const healthBarWidth = this.width* (this.maxHealth / 50); 
+        const healthBarHeight = 5; 
+        const healthBarX = this.x + (this.image.width/2 - healthBarWidth) / 2;
+        const healthBarY = this.y - 10; 
+        const healthPercentage = this.health / this.maxHealth;
+        this.context.fillStyle = 'red';
+        this.context.fillRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
+        this.context.fillStyle = 'green';
+        this.context.fillRect(healthBarX, healthBarY, healthBarWidth * healthPercentage, healthBarHeight);
+        this.context.strokeStyle = 'black';
+        this.context.strokeRect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
+        
         if(this.moving) {
             this.elapsed++;
             if(this.elapsed % 10 !== 0) {
@@ -270,6 +281,7 @@ class Enemy{
                 this.animationFrame = 0;
         }
     }
+
 }
 
 
@@ -376,7 +388,7 @@ const enemies = [];
 for(let i = 0; i < 10; i++) {
     const x = Math.floor(Math.random() * 10) * 64 + offset.x;
     const y = Math.floor(Math.random() * 10) * 64 + offset.y
-    enemies.push(new Enemy(100, 10, 10, x, y, skeletonImage, c1));
+    enemies.push(new Enemy(30, 30, 10, 10, x, y, skeletonImage, c1));
 }
 // enemies.push(e);
 // enemies.push(testEnemy);
@@ -498,6 +510,9 @@ function gameLoop() {
     if(keysPressed.q) {
         player1.swingSword();
         keysPressed.q = false;
+        enemies.forEach(enemy => {
+            detectCollisionPlayerSwordEnemy(player1, enemy);
+        });
     }
 }
 gameLoop();
@@ -609,7 +624,10 @@ should also decrement enemys left in the wave
 should check if the wave is finished using the method in the wave class
 */
 function enemyDefeated(enemy){
-
+    const index = enemies.indexOf(enemy);
+    if (index !== -1) {
+        enemies.splice(index, 1);
+    }
 }
 /*
 called when enemy is hit by player sword,
@@ -617,18 +635,48 @@ determine how much to decrease enemy health by depending on the player's attack 
 change the enemy health bar visual aswell
 */
 function decreaseEnemyHealth(enemy){
+    enemy.health -= 10;
+    if(enemy.health <= 0) {
+        enemyDefeated(enemy);
+    }
 }
 /*
 detect player sword collision with enemy, decrease enemy health as a result
 */
-function detectCollisionPlayerSwordEnemy(enemy){
+function detectCollisionPlayerSwordEnemy(player, enemy) {
+    let swordX = player.x;
+    let swordY = player.y;
+    let swordWidth = player.width;
+    let swordHeight = player.height;
+
+    if (player.direction === 3) {
+        swordY-= player.height/2;
+    } else if (player.direction === 0) {
+        swordY += player.height/2;
+    } else if (player.direction === 1) {
+        swordX -= player.width * 1.2;
+    } else if (player.direction === 2) {
+        swordX += player.width * 1.2;
+
+    }
+
+    const enemyX = enemy.x;
+    const enemyY = enemy.y;
+    const enemyWidth = enemy.width;
+    const enemyHeight = enemy.height;
+
+    if (swordX < enemyX + enemyWidth && 
+        swordX + swordWidth > enemyX && 
+        swordY < enemyY + enemyHeight && 
+        swordY + swordHeight > enemyY) {
+        // Collision detected, decrease enemy health
+        console.log('hit');
+        decreaseEnemyHealth(enemy);
+    }
 }
 
-/*
-playerswing sword function + animation
-*/
-function playerSwingSword(player){
-}
+
+
 
 
 /*
