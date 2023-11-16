@@ -29,6 +29,72 @@ class Player{
         this.x = x;
         this.y = y;
     }
+    //function to swing sword
+    swingSword() {
+
+            this.context.save();
+            if(this.direction === 3) {
+                this.context.translate(this.x + this.width / 2, this.y + this.height / 2);
+                this.context.rotate(-Math.PI / 2);
+                this.context.drawImage(
+                    slashImage,
+                    0,
+                    0,
+                    slashImage.width / 6,
+                    slashImage.height,
+                    8,
+                    -100,
+                    this.width,
+                    this.height * 3
+                );
+            } else if (this.direction === 0) {
+                this.context.translate(this.x + this.width / 2, this.y + this.height / 2);
+                this.context.rotate(Math.PI / 2);
+                this.context.drawImage(
+                    slashImage,
+                    0,
+                    0,
+                    slashImage.width / 6,
+                    slashImage.height,
+                    -8,
+                    -100,
+                    this.width,
+                    this.height * 3
+                );
+            } else if (this.direction === 1) {
+                this.context.translate(this.x + this.width / 2, this.y + this.height / 2);
+                this.context.rotate(Math.PI);
+                this.context.drawImage(
+                    slashImage,
+                    0,
+                    0,
+                    slashImage.width / 6,
+                    slashImage.height,
+                    -this.width * 0.75,
+                    -this.height * 0.65,
+                    this.width * 2,
+                    this.height
+                );
+            } else if (this.direction === 2) {
+                this.context.drawImage(
+                    slashImage,
+                    0,
+                    0,
+                    slashImage.width / 6,
+                    slashImage.height,
+                    this.x,
+                    this.y + this.height / 16,
+                    this.width * 2,
+                    this.height
+                );
+            }
+    
+    
+            this.context.restore();
+        
+    }
+    
+    
     draw() {
         this.context.drawImage(
             this.image,
@@ -258,6 +324,9 @@ p1Image.src = 'assets/hero.png';
 const skeletonImage = new Image();
 skeletonImage.src = 'assets/skeleton.png';
 
+const slashImage = new Image();
+slashImage.src = 'assets/swordSlash.png';
+
 
 const offset = {
     x: -64 * 2,
@@ -271,7 +340,8 @@ const keysPressed = {
     w: false,
     a: false,
     s: false,
-    d: false
+    d: false,
+    q: false
 };
 
 const mapCollision = [];
@@ -346,7 +416,7 @@ function gameLoop() {
     // e.draw();
     // console.log("Enemy:", testEnemy.x, testEnemy.y);
     // console.log("Background", player1.x, p1background.y)
-    console.log("Player:", player1.health);
+    // console.log("Player:", player1.health);
 
     boundaries.forEach(boundary => {
         boundary.draw();
@@ -425,6 +495,10 @@ function gameLoop() {
             });
         }
     }
+    if(keysPressed.q) {
+        player1.swingSword();
+        keysPressed.q = false;
+    }
 }
 gameLoop();
 
@@ -442,6 +516,9 @@ window.addEventListener('keydown', function(e) {
         case 'd':
             keysPressed.d = true;
             break;
+        case 'q':
+            keysPressed.q = true;
+            break;
     }
 });
 
@@ -458,6 +535,9 @@ window.addEventListener('keyup', function(e) {
             break;
         case 'd':
             keysPressed.d = false;
+            break;
+        case 'q':
+            keysPressed.q = false;
             break;
     }
 });
@@ -506,7 +586,7 @@ function detectCollisionPlayerEnemy(player, enemy){
     } else {
         if (detectCollisionEntityEntity(player, enemy)) {
             decreasePlayerHealth(player);
-            console.log('hit');
+            // console.log('hit');
             player.isInvincible = true;
             setTimeout(() => {
                 player.isInvincible = false;
@@ -549,24 +629,6 @@ playerswing sword function + animation
 */
 function playerSwingSword(player){
 }
-
-
-
-/*
-add listeners for player movement, attacks, then call movePlayer1 or movePlayer2
-*/
-var character = document.querySelector(".character");
-var x = 0;
-var y = 0;
-var speed = 2; //How fast the character moves in pixels per frame
-
-
-
-
-
-
-
-
 
 
 /*
