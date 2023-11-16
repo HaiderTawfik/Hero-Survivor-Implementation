@@ -19,6 +19,10 @@ class Player{
         this.image = image;
         this.width = this.image.width/2;
         this.height = this.image.height/2;
+        this.animationFrame = 0;
+        this.elapsed = 0;
+        this.moving = false;
+        this.direction = 0;
     }
     //function to move player
     move(x, y){
@@ -28,8 +32,8 @@ class Player{
     draw() {
         this.context.drawImage(
             this.image,
-            0,
-            0,
+            this.animationFrame * this.image.width/3,
+            this.direction * this.image.height/4 + 0.1,
             this.image.width/3,
             this.image.height/4, 
             this.x, 
@@ -37,6 +41,16 @@ class Player{
             this.image.width/2,
             this.image.height/2, 
         );
+        if(this.moving) {
+            this.elapsed++;
+            if(this.elapsed % 10 !== 0) {
+                return;
+            }
+            if(this.animationFrame < 2)
+                this.animationFrame++;
+            else
+                this.animationFrame = 0;
+        } 
     }
 }
 
@@ -77,6 +91,10 @@ class Enemy{
         this.context = context;
         this.width = this.image.width/2;
         this.height = this.image.height/2;
+        this.direction = 0;
+        this.animationFrame = 0;
+        this.moving = true;
+        this.elapsed = 0;
     }
     //function to move enemy
     moveTowardsPlayer(player, boundaries) {
@@ -84,13 +102,11 @@ class Enemy{
     
         let targetX = player.x;
         let targetY = player.y;
-    
         if (this.x < player.x) {
             targetX = Math.min(targetX, this.x + speed);
         } else if (this.x > player.x) {
             targetX = Math.max(targetX, this.x - speed);
         }
-    
         if (this.y < player.y) {
             targetY = Math.min(targetY, this.y + speed);
         } else if (this.y > player.y) {
@@ -114,6 +130,15 @@ class Enemy{
         if (canMove) {
             this.x = targetX;
             this.y = targetY;
+            if (this.x < player.x) {
+                this.direction = 2;
+            } else if (this.x > player.x) {
+                this.direction = 1;
+            } else if(this.y > player.y) {
+                this.direction = 3;
+            } else if (this.y < player.y) {
+                this.direction = 0;
+            }
         } else {
             potentialCollision.y = this.y;
             canMove = true;
@@ -126,6 +151,11 @@ class Enemy{
     
             if (canMove) {
                 this.x = targetX;
+                if(this.x < player.x) {
+                    this.direction = 2;
+                } else {
+                    this.direction = 1;
+                }
             } else {
                 potentialCollision.x = this.x;
                 potentialCollision.y = targetY;
@@ -139,16 +169,23 @@ class Enemy{
     
                 if (canMove) {
                     this.y = targetY;
+                    if(this.y > player.y) {
+                        this.direction = 3;
+                    } else {
+                        this.direction = 0;
+                    }
                 }
-            }    
+            } 
         }
+        this.moving = canMove;   
+
         detectCollisionPlayerEnemy(player1, this);
     }
     draw() {
         this.context.drawImage(
             this.image,
-            0,
-            0,
+            this.animationFrame * this.image.width/3,
+            this.direction * this.image.height/4 + 0.3,
             this.image.width/3,
             this.image.height/4, 
             this.x, 
@@ -156,6 +193,16 @@ class Enemy{
             this.image.width/2,
             this.image.height/2, 
         );
+        if(this.moving) {
+            this.elapsed++;
+            if(this.elapsed % 10 !== 0) {
+                return;
+            }
+            if(this.animationFrame < 2)
+                this.animationFrame++;
+            else
+                this.animationFrame = 0;
+        }
     }
 }
 
@@ -218,7 +265,8 @@ const offset = {
 }
 const p1background = new Background(offset.x, offset.y, image, c1);
 const player1 = new Player(100, 10, 10, 8 * 32, 6 * 32, false, c1, p1Image);
-const testEnemy = new Enemy(100, 10, 10, 2 * 32, 2 * 32, skeletonImage, c1);
+// const testEnemy = new Enemy(100, 10, 10, 4 * 32, 10 * 32, skeletonImage, c1);
+// const e = new Enemy(100, 10, 10, 2 * 32, 2 * 32, skeletonImage, c1);
 const keysPressed = {
     w: false,
     a: false,
@@ -252,8 +300,16 @@ for (let i = 0; i < mapCollision.length; i++) {
         }
     }
 }
+
 const enemies = [];
-enemies.push(testEnemy);
+// temp
+for(let i = 0; i < 10; i++) {
+    const x = Math.floor(Math.random() * 10) * 64 + offset.x;
+    const y = Math.floor(Math.random() * 10) * 64 + offset.y
+    enemies.push(new Enemy(100, 10, 10, x, y, skeletonImage, c1));
+}
+// enemies.push(e);
+// enemies.push(testEnemy);
 // const testBoundary = new Boundary(128, 128, 64, 64);
 const itemsToMove = [p1background, ...boundaries, ...enemies];
 
@@ -271,7 +327,12 @@ function gameLoop() {
     p1background.draw();
     // testBoundary.draw();
     player1.draw();
-    testEnemy.moveTowardsPlayer(player1, boundaries);
+    enemies.forEach(enemy => {
+        enemy.moveTowardsPlayer(player1, boundaries);
+        enemy.draw();
+    });
+    // testEnemy.moveTowardsPlayer(player1, boundaries);
+    // e.moveTowardsPlayer(player1, boundaries);
     // if(testEnemy.x< player1.x) {
     //     testEnemy.x += 1;
     // } else if (testEnemy.x > player1.x) {
@@ -281,9 +342,11 @@ function gameLoop() {
     // } else if (testEnemy.y > player1.y) {
     //     testEnemy.y -= 1;
     // }
-    testEnemy.draw();
+    // testEnemy.draw();
+    // e.draw();
     // console.log("Enemy:", testEnemy.x, testEnemy.y);
     // console.log("Background", player1.x, p1background.y)
+    console.log("Player:", player1.health);
 
     boundaries.forEach(boundary => {
         boundary.draw();
@@ -293,7 +356,10 @@ function gameLoop() {
     //     console.log('collision');
     // }
     let canMove = true;
+    player1.moving = false;
     if(keysPressed.w) {
+        player1.moving = true;
+        player1.direction = 3;
         boundaries.forEach(boundary => {
             boundary.y += 2;
             if(detectCollisionEntityWall(player1, boundary)) {
@@ -308,22 +374,9 @@ function gameLoop() {
             });
         }
     }
-    if(keysPressed.a) {
-        boundaries.forEach(boundary => {
-            boundary.x += 2;
-            if(detectCollisionEntityWall(player1, boundary)) {
-                // console.log('collision');
-                canMove = false;
-            }
-            boundary.x -= 2;
-        });
-        if(canMove) {
-            itemsToMove.forEach(item => {
-                item.x += 2;
-            });
-        }
-    }
     if(keysPressed.s) {
+        player1.moving = true;
+        player1.direction = 0;
         boundaries.forEach(boundary => {
             boundary.y -= 2;
             if(detectCollisionEntityWall(player1, boundary)) {
@@ -338,7 +391,26 @@ function gameLoop() {
             });
         }
     }
+    if(keysPressed.a) {
+        player1.moving = true;
+        player1.direction = 1;
+        boundaries.forEach(boundary => {
+            boundary.x += 2;
+            if(detectCollisionEntityWall(player1, boundary)) {
+                // console.log('collision');
+                canMove = false;
+            }
+            boundary.x -= 2;
+        });
+        if(canMove) {
+            itemsToMove.forEach(item => {
+                item.x += 2;
+            });
+        }
+    }
     if(keysPressed.d) {
+        player1.direction = 2;
+        player1.moving = true;
         boundaries.forEach(boundary => {
             boundary.x -= 2;
             if(detectCollisionEntityWall(player1, boundary)) {
@@ -410,6 +482,7 @@ calculate how much to decrease the players health by depending on the enemy's at
 change the player health bar visual aswell
 */
 function decreasePlayerHealth(player){
+    player.health -= 10;
 }
 function detectCollisionEntityEntity (player, enemy) {
     return(player.x + player.width >= enemy.x &&
