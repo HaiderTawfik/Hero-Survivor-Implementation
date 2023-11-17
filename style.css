@@ -49,6 +49,22 @@ UCID: 30097912
     top: calc(var(--grid-cell)* 1);
     right: calc( var(--grid-cell)* 2); 
  }
+
+ #enemiesLeftp0{
+      color: white;
+      font-size: calc(var(--grid-cell)*2);
+      position: absolute;
+      bottom: calc(var(--grid-cell)* 1);
+      left: calc( var(--grid-cell)* 2);
+ }
+
+#enemiesLeftp1{
+   color: white;
+   font-size: calc(var(--grid-cell)*2);
+   position: absolute;
+   bottom: calc(var(--grid-cell)* 1);
+   right: calc( var(--grid-cell)* 3);
+}
  
  #wave{
     color: white;

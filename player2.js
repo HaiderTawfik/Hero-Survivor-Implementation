@@ -24,7 +24,7 @@ const p2KeysPressed = {
 }
 
 const p2Boundaries = [];
-wave.p2spawnEnemies();
+// wave.p2spawnEnemies();
 const p2Enemies = wave.p2enemies;
 for (let i = 0; i < mapCollision.length; i++) {
     for (let j = 0; j < mapCollision[i].length; j++) {

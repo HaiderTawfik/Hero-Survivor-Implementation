@@ -144,7 +144,7 @@ Intialize possible buff's array
 enemy class, include things such as health, attack, defense, etc, and current x, y position.
 */
 class Enemy{
-    constructor(maxHealth, health, attack, defense, x, y, image, context, group){
+    constructor(maxHealth, health, attack, defense, x, y, image, context, group, moveThroughWalls){
         this.health = health;
         this.attack = attack;
         this.defense = defense;
@@ -160,6 +160,7 @@ class Enemy{
         this.elapsed = 0;
         this.maxHealth = maxHealth;
         this.group = group;
+        this.moveThroughWalls = moveThroughWalls;
     }
     //function to move enemy
     moveTowardsPlayer(player, boundaries) {
@@ -185,12 +186,13 @@ class Enemy{
         };
     
         let canMove = true;
-    
-        boundaries.forEach(boundary => {
-            if (detectCollisionEntityWall(potentialCollision, boundary)) {
-                canMove = false;
-            }
-        });
+            if(!this.moveThroughWalls) {
+            boundaries.forEach(boundary => {
+                if (detectCollisionEntityWall(potentialCollision, boundary)) {
+                    canMove = false;
+                }
+            });
+        }
     
         if (canMove) {
             this.x = targetX;
@@ -258,17 +260,6 @@ class Enemy{
             this.image.width/2,
             this.image.height/2, 
         );
-        // c2.drawImage(
-        //     this.image,
-        //     this.animationFrame * this.image.width/3,
-        //     this.direction * this.image.height/4 + 0.3,
-        //     this.image.width/3,
-        //     this.image.height/4, 
-        //     this.x, 
-        //     this.y,
-        //     this.image.width/2,
-        //     this.image.height/2, 
-        // );
         
 
         const healthBarWidth = this.width* (this.maxHealth / 50); 
@@ -341,7 +332,7 @@ class Wave{
             for (let i = 0; i < spawnPoints.length; i++) {
                 for (let j = 0; j < spawnPoints[i].length; j++) {
                     if (spawnPoints[i][j] === 2122) {
-                        this.p1enemies.push(new Enemy(30, 30, 10, 10, j*64 + offset.x + spawnoffsetp1.x, i*64 + offset.y + spawnoffsetp1.y, skeletonImage, c1, this.p1enemies));
+                        this.p1enemies.push(new Enemy(30, 30, 10, 10, j*64 + offset.x + spawnoffsetp1.x, i*64 + offset.y + spawnoffsetp1.y, skeletonImage, c1, this.p1enemies, false));
                     }
                 }
             }
@@ -350,10 +341,16 @@ class Wave{
             for (let i = 0; i < spawnpointswave2p1.length; i+= 60) {
                 spawnPoints.push(spawnpointswave2p1.slice(i, i+60));
             }
+            let counter = 0;
             for (let i = 0; i < spawnPoints.length; i++) {
                 for (let j = 0; j < spawnPoints[i].length; j++) {
                     if (spawnPoints[i][j] === 2122) {
-                        this.p1enemies.push(new Enemy(50, 50, 10, 10, j*64 + offset.x + spawnoffsetp1.x, i*64 + offset.y + spawnoffsetp1.y, skeletonImage, c1, this.p1enemies));
+                        if(counter % 3 === 0){
+                            this.p1enemies.push(new Enemy(20, 20, 10, 10, j*64 + offset.x + spawnoffsetp1.x, i*64 + offset.y + spawnoffsetp1.y, ghostImage, c1, this.p1enemies, true));
+                        } else {
+                            this.p1enemies.push(new Enemy(50, 50, 10, 10, j*64 + offset.x + spawnoffsetp1.x, i*64 + offset.y + spawnoffsetp1.y, skeletonImage, c1, this.p1enemies, false));
+                        }
+                        counter++;
                     }
                 }
             }
@@ -369,7 +366,7 @@ class Wave{
             for(let i = 0; i < spawnPoints.length; i++) {
                 for(let j = 0; j < spawnPoints[i].length; j++) {
                     if(spawnPoints[i][j] === 2122) {
-                        this.p2enemies.push(new Enemy(30, 30, 10, 10, j*64 + -64 * 44 + spawnoffsetp2.x, i*64 + -64 * 26 + spawnoffsetp2.y, skeletonImage, c2, this.p2enemies));
+                        this.p2enemies.push(new Enemy(30, 30, 10, 10, j*64 + -64 * 44 + spawnoffsetp2.x, i*64 + -64 * 26 + spawnoffsetp2.y, skeletonImage, c2, this.p2enemies, false));
                     }
                 }
             }
@@ -378,10 +375,16 @@ class Wave{
             for (let i = 0; i < spawnpointswave2p2.length; i+= 60) {
                 spawnPoints.push(spawnpointswave2p2.slice(i, i+60));
             }
+            let counter = 0;
             for(let i = 0; i < spawnPoints.length; i++) {
                 for(let j = 0; j < spawnPoints[i].length; j++) {
                     if(spawnPoints[i][j] === 2122) {
-                        this.p2enemies.push(new Enemy(50, 50, 10, 10, j*64 + -64 * 44 + spawnoffsetp2.x, i*64 + -64 * 26 + spawnoffsetp2.y, skeletonImage, c2, this.p2enemies));
+                        if(counter % 3 === 0){
+                            this.p2enemies.push(new Enemy(20, 20, 10, 10, j*64 + -64 * 44 + spawnoffsetp2.x, i*64 + -64 * 26 + spawnoffsetp2.y, ghostImage, c2, this.p2enemies, true));
+                        } else {
+                            this.p2enemies.push(new Enemy(50, 50, 10, 10, j*64 + -64 * 44 + spawnoffsetp2.x, i*64 + -64 * 26 + spawnoffsetp2.y, skeletonImage, c2, this.p2enemies, false));
+                        }
+                        counter++;
                     }
                 }
             }
@@ -408,13 +411,13 @@ class Wave{
     }
     //function to start the next wave
     startNextWave(){
-        if(this.currentWave === 2){
-            this.p1spawnEnemies();
-            this.p2spawnEnemies();
-        }
+        this.p1spawnEnemies();
+        this.p2spawnEnemies();
+        document.getElementById('wave').innerHTML = `Wave: ${this.currentWave}`;  
+        document.getElementById('enemiesLeftp0').innerHTML = `Enemies Left: ${wave.p1enemies.length}`;
+        document.getElementById('enemiesLeftp1').innerHTML = `Enemies Left: ${wave.p2enemies.length}`; 
     }
 }
-
 
 const canvasp1 = document.getElementById('canvasp1');
 const c1 = canvasp1.getContext('2d');
@@ -498,8 +501,8 @@ for (let i = 0; i < mapCollision.length; i++) {
 
 const enemies = [];
 const p2enemies = [];
-const wave = new Wave (2, enemies, p2enemies);
-wave.p1spawnEnemies();
+const wave = new Wave (1, enemies, p2enemies);
+wave.startNextWave();
 // for(let i = 0; i < 10; i++) {
 //     const x = Math.floor(Math.random() * 10) * 64 + offset.x;
 //     const y = Math.floor(Math.random() * 10) * 64 + offset.y
@@ -552,10 +555,9 @@ function gameLoop() {
     // console.log("Enemy:", testEnemy.x, testEnemy.y);
     // console.log("Background", player1.x, p1background.y)
     // console.log("Player:", player1.health);
-
-    boundaries.forEach(boundary => {
-        boundary.draw();
-    });
+    // boundaries.forEach(boundary => {
+    //     boundary.draw();
+    // });
     // c2.drawImage(image, -(135*16), -(45*16));
     // if(detectCollisionEntityWall(player1, testBoundary)) {
     //     console.log('collision');
@@ -679,19 +681,6 @@ window.addEventListener('keyup', function(e) {
             break;
     }
 });
-/*
-function to detect collision between chest and player, call playerBuff to give the players a buff
-*/
-function detectCollisionChestPlayer(){
-
-}
-
-/*
-Randomize and choose 1 of 4 predetermined buffs, and give it to the player
-remove the buffs from possible buffs array. Buffs include speed buff, attack buff, defense buff, attack buff level 2
-*/
-function playerBuff(){
-}
 
 
 /*
@@ -741,14 +730,6 @@ function detectCollisionPlayerEnemy(player, enemy){
 }
 
 /*
-debuff function, if an enemy debuffs a player, apply the debuff to the player
-debuff will expire after a certain amount of time
-debuff include speed decrease, health decrease.
-*/
-function setDebuff(debuff){
-}
-
-/*
 function to call when enemy is defeated to remove them from the screen.
 should also decrement enemys left in the wave
 should check if the wave is finished using the method in the wave class
@@ -760,6 +741,8 @@ function enemyDefeated(enemy){
     }
     wave.enemiesLeft--;
     wave.isWaveOver();
+    document.getElementById('enemiesLeftp0').innerHTML = `Enemies Left: ${wave.p1enemies.length}`;
+    document.getElementById('enemiesLeftp1').innerHTML = `Enemies Left: ${wave.p2enemies.length}`;
 }
 /*
 called when enemy is hit by player sword,
@@ -804,38 +787,3 @@ function detectCollisionPlayerSwordEnemy(player, enemy) {
         decreaseEnemyHealth(enemy);
     }
 }
-
-
-
-
-
-/*
-move player2 with animation function
-*/
-function movePlayer2(direction){
-}
-
-/*
-function to detect which player is the closest to an enemy, used in routing algorithm
-*/
-function getClosestPlayer(enemy){
-}
-
-/*
-routing algorithm for enemies that can't go through walls
-find the closest player and move towards them avoiding wall collisions
-*/
-function findPathToPlayer(enemy){
-}
-
-/*
-routing algorithm for enemies that can go through walls (ghosts)
-find the closest player and mvoe towards them, ignore wall collisions
-*/
-function findPathToPlayerNoWalls(enemy){
-}
-
-/*
-if time permits, boss will have special moves that players will have to avoid
-this will be the function for that
-*/
