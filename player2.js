@@ -1,5 +1,5 @@
-const canvasp2 = document.getElementById('canvasp2');
-const c2 = canvasp2.getContext('2d');
+// const canvasp2 = document.getElementById('canvasp2');
+// const c2 = canvasp2.getContext('2d');
 
 canvasp2.width = 700;
 canvasp2.height = 700;
@@ -24,7 +24,8 @@ const p2KeysPressed = {
 }
 
 const p2Boundaries = [];
-const p2Enemies = [];
+wave.p2spawnEnemies();
+const p2Enemies = wave.p2enemies;
 for (let i = 0; i < mapCollision.length; i++) {
     for (let j = 0; j < mapCollision[i].length; j++) {
         if (mapCollision[i][j] === 1097) {
@@ -33,12 +34,16 @@ for (let i = 0; i < mapCollision.length; i++) {
     }
 }
 
-const testEnemy = new Enemy(30, 30, 30, 20, 64, 64, skeletonImage, c2, p2Enemies);
-p2Enemies.push(testEnemy);
-const p2ItemsToMove = [p2background, ...p2Boundaries, ...p2Enemies];
-
+// const testEnemy = new Enemy(30, 30, 30, 20, 64, 64, skeletonImage, c2, p2Enemies);
+// p2Enemies.push(testEnemy);
+const p2ItemsToMove = [p2background, ...p2Boundaries, ...wave.p2enemies, spawnoffsetp2];
+let curWave = 1;
 function p2GameLoop() {
     window.requestAnimationFrame(p2GameLoop);
+    if(curWave != wave.currentWave) {
+        p2ItemsToMove.push(...wave.p2enemies);
+        curWave++;
+    }
     p2background.draw();
     player2.draw();
     p2Enemies.forEach(enemy => {

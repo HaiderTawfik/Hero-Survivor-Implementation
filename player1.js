@@ -303,35 +303,123 @@ class Enemy{
 Initalize arrays of enemies for each wave using loops
 i.e. first wave will be an 10 skeleton in an array, randomize spawn ensuring that they are valid x y positions
 */
+class SpawnPoints {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.width = 64
+        this.height = 64;
+    }
 
+}
+
+class SpawnPointOffset {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+const spawnoffsetp1 = new SpawnPointOffset(0, 0);
+const spawnoffsetp2 = new SpawnPointOffset(0, 0);
 /*
 wave class, include things such as current wave, enemies to spawn, enemies left, and chest locations to spawn, and a function to spawn the enemies
 */
-class wave{
-    constructor(currentWave, enemiesToSpawn, enemiesLeft, chestLocations){
+class Wave{
+    constructor(currentWave, p1enemies, p2enemies){
+        this.currentWave = currentWave;
+        this.p1enemies = p1enemies;
+        this.p2enemies = p2enemies;
+        this.enemiesLeft = p1enemies.length + p2enemies.length;
     }
     //function to spawn enemies
-    spawnEnemies(enemiesToSpawn){
+    p1spawnEnemies(){
+        if(this.currentWave === 1) {
+            const spawnPoints = [];
+            for (let i = 0; i < spawnpointswave1p1.length; i+= 60) {
+                spawnPoints.push(spawnpointswave1p1.slice(i, i+60));
+            }
+            for (let i = 0; i < spawnPoints.length; i++) {
+                for (let j = 0; j < spawnPoints[i].length; j++) {
+                    if (spawnPoints[i][j] === 2122) {
+                        this.p1enemies.push(new Enemy(30, 30, 10, 10, j*64 + offset.x + spawnoffsetp1.x, i*64 + offset.y + spawnoffsetp1.y, skeletonImage, c1, this.p1enemies));
+                    }
+                }
+            }
+        } else if(this.currentWave === 2) {
+            const spawnPoints = [];
+            for (let i = 0; i < spawnpointswave2p1.length; i+= 60) {
+                spawnPoints.push(spawnpointswave2p1.slice(i, i+60));
+            }
+            for (let i = 0; i < spawnPoints.length; i++) {
+                for (let j = 0; j < spawnPoints[i].length; j++) {
+                    if (spawnPoints[i][j] === 2122) {
+                        this.p1enemies.push(new Enemy(50, 50, 10, 10, j*64 + offset.x + spawnoffsetp1.x, i*64 + offset.y + spawnoffsetp1.y, skeletonImage, c1, this.p1enemies));
+                    }
+                }
+            }
+        }
+        this.enemiesLeft += this.p1enemies.length;
+    }
+    p2spawnEnemies(){
+        if(this.currentWave === 1) {
+            const spawnPoints = [];
+            for (let i = 0; i < spawnpointswave1p2.length; i+= 60) {
+                spawnPoints.push(spawnpointswave1p2.slice(i, i+60));
+            }
+            for(let i = 0; i < spawnPoints.length; i++) {
+                for(let j = 0; j < spawnPoints[i].length; j++) {
+                    if(spawnPoints[i][j] === 2122) {
+                        this.p2enemies.push(new Enemy(30, 30, 10, 10, j*64 + -64 * 44 + spawnoffsetp2.x, i*64 + -64 * 26 + spawnoffsetp2.y, skeletonImage, c2, this.p2enemies));
+                    }
+                }
+            }
+        } else if (this.currentWave === 2) {
+            const spawnPoints = [];
+            for (let i = 0; i < spawnpointswave2p2.length; i+= 60) {
+                spawnPoints.push(spawnpointswave2p2.slice(i, i+60));
+            }
+            for(let i = 0; i < spawnPoints.length; i++) {
+                for(let j = 0; j < spawnPoints[i].length; j++) {
+                    if(spawnPoints[i][j] === 2122) {
+                        this.p2enemies.push(new Enemy(50, 50, 10, 10, j*64 + -64 * 44 + spawnoffsetp2.x, i*64 + -64 * 26 + spawnoffsetp2.y, skeletonImage, c2, this.p2enemies));
+                    }
+                }
+            }
+        }
+        this.enemiesLeft += this.p2enemies.length;
     }
     //function to spawn chest
-    spawnChest(chestLocations){
-    }
+
     //function to check if wave is over (if enemies left is 0), 
     // and to check if game is won (wave is 3 and enemies left is 0)
     // increments the current wave if game is not over
     // calls startNextWave with enemiesToSpawn, enemiesLeft(length of array enemiestToSpawn), and chestLocations
     isWaveOver(){
+        console.log(this.enemiesLeft)
+        if(this.enemiesLeft === 0){
+            if(this.currentWave === 3){
+                console.log('game won')
+            } else {
+                this.currentWave++;
+                console.log('wave over' + this.currentWave)
+                this.startNextWave();
+            }
+        }
     }
     //function to start the next wave
-    startNextWave(enemiesToSpawn, enemiesLeft, chestLocations){
+    startNextWave(){
+        if(this.currentWave === 2){
+            this.p1spawnEnemies();
+            this.p2spawnEnemies();
+        }
     }
 }
 
 
 const canvasp1 = document.getElementById('canvasp1');
 const c1 = canvasp1.getContext('2d');
-// const canvasp2 = document.getElementById('canvasp2');
-// const c2 = canvasp2.getContext('2d');
+const canvasp2 = document.getElementById('canvasp2');
+const c2 = canvasp2.getContext('2d');
 
 canvasp1.width = 700;
 canvasp1.height = 700;
@@ -356,6 +444,9 @@ skeletonImage.src = 'assets/skeleton.png';
 const slashImage = new Image();
 slashImage.src = 'assets/swordSlash.png';
 
+const ghostImage = new Image(); 
+ghostImage.src = 'assets/ghost.png';
+
 
 const offset = {
     x: -64 * 4,
@@ -379,6 +470,7 @@ const mapCollision = [];
 for (let i = 0; i < collisions.length; i+= 60) {
     mapCollision.push(collisions.slice(i, i+60));
 }
+
 class Boundary {
     constructor(x, y, width, height) {
         this.x = x;
@@ -393,6 +485,8 @@ class Boundary {
     }
 }
 
+
+
 const boundaries = [];
 for (let i = 0; i < mapCollision.length; i++) {
     for (let j = 0; j < mapCollision[i].length; j++) {
@@ -403,16 +497,18 @@ for (let i = 0; i < mapCollision.length; i++) {
 }
 
 const enemies = [];
-// temp
-for(let i = 0; i < 10; i++) {
-    const x = Math.floor(Math.random() * 10) * 64 + offset.x;
-    const y = Math.floor(Math.random() * 10) * 64 + offset.y
-    enemies.push(new Enemy(30, 30, 10, 10, x, y, skeletonImage, c1, enemies));
-}
+const p2enemies = [];
+const wave = new Wave (2, enemies, p2enemies);
+wave.p1spawnEnemies();
+// for(let i = 0; i < 10; i++) {
+//     const x = Math.floor(Math.random() * 10) * 64 + offset.x;
+//     const y = Math.floor(Math.random() * 10) * 64 + offset.y
+//     enemies.push(new Enemy(30, 30, 10, 10, x, y, skeletonImage, c1, enemies));
+// }
 // enemies.push(e);
 // enemies.push(testEnemy);
 // const testBoundary = new Boundary(128, 128, 64, 64);
-const itemsToMove = [p1background, ...boundaries, ...enemies];
+const itemsToMove = [p1background, ...boundaries, ...wave.p1enemies, spawnoffsetp1];
 
 /*
 function detect collision with entity and walls
@@ -423,8 +519,14 @@ function detectCollisionEntityWall(entity1, wall){
     entity1.y <= wall.y + wall.height &&
     entity1.y + entity1.height >= wall.y);
 }
+let currWave = 1;
+
 function gameLoop() {
     window.requestAnimationFrame(gameLoop);
+    if(currWave != wave.currentWave) {
+        itemsToMove.push(...wave.p1enemies);
+        currWave++;
+    }
     p1background.draw();
     // testBoundary.draw();
     // p2background.draw()
@@ -656,6 +758,8 @@ function enemyDefeated(enemy){
     if (index !== -1) {
         enemy.group.splice(index, 1);
     }
+    wave.enemiesLeft--;
+    wave.isWaveOver();
 }
 /*
 called when enemy is hit by player sword,
