@@ -34,60 +34,22 @@ UCID: 30097912
     height: 100%;
     position: relative;
  }
+ #p0Hp {
+      color: white;
+      font-size: calc(var(--grid-cell)*2);
+      position: absolute;
+      top: calc(var(--grid-cell)* 1);
+      left: calc( var(--grid-cell)* 2);
+ }
+
+ #p1Hp {
+    color: white;
+    font-size: calc(var(--grid-cell)*2);
+    position: absolute;
+    top: calc(var(--grid-cell)* 1);
+    right: calc( var(--grid-cell)* 2); 
+ }
  
- .character {
-    width: calc( var(--grid-cell)* 2 );
-    height: calc( var(--grid-cell)* 2 );
-    position: absolute;
-    overflow:hidden;
- }
- .character2 {
-    bottom: calc(var(--grid-cell)* 3);
-    right: calc(var(--grid-cell)* 3);
-    width: calc( var(--grid-cell)* 2 );
-    height: calc( var(--grid-cell)* 2 );
-    position: absolute;
-    overflow:hidden;
- }
-
- .enemy{
-    top: calc(var(--grid-cell)* 5);
-    left: calc( var(--grid-cell)* 5);
-    width: calc( var(--grid-cell)* 2 );
-    height: calc( var(--grid-cell)* 2 );
-    position: absolute;
-    overflow:hidden;
- }
-
- .ghost{
-    bottom: calc(var(--grid-cell)* 15);
-    right: calc( var(--grid-cell)* 5);
-    width: calc( var(--grid-cell)* 2 );
-    height: calc( var(--grid-cell)* 2 );
-    position: absolute;
-    overflow:hidden;
- }
-
- .boss{
-    top: calc(var(--grid-cell)* 20);
-    left: calc( var(--grid-cell)* 40 );
-    width: calc( var(--grid-cell-boss)* 2 );
-    height: calc( var(--grid-cell-boss)* 2 );
-    position: absolute;
-    overflow:hidden;
- }
-
- .chest {
-    top: calc(var(--grid-cell)* 5);
-    left: calc( var(--grid-cell)* 0.25);
-    width: calc( var(--grid-cell)* 2 );
-    height: calc( var(--grid-cell)* 2 );
-    position: absolute;
-    overflow:hidden;
-    background-image: url("assets/chest.png");
-    background-size: 100%;
- }
-
  #wave{
     color: white;
     font-size: calc(var(--grid-cell)*2);
@@ -100,133 +62,15 @@ UCID: 30097912
     color: white;
     font-size: calc(var(--grid-cell)*2);
     position: absolute;
-    top: calc(var(--grid-cell)* 1);
-    right: calc( var(--grid-cell)* 2);
- }
- 
- .character_spritesheet {
-    position: absolute;
-    background: url("assets/hero.png") no-repeat no-repeat;
-    background-size: 100%;
-    width: calc( var(--grid-cell)* 6 );
-    height: calc( var(--grid-cell)* 6 );
-    animation: walk 0.6s steps(3) infinite;
+    top: calc(var(--grid-cell)* 4);
+    left: calc( var(--grid-cell)* 38);
  }
 
- .character2_spritesheet{
-    position: absolute;
-    background: url("assets/hero2.png") no-repeat no-repeat;
-    background-size: 100%;
-    width: calc( var(--grid-cell)* 6 );
-    height: calc( var(--grid-cell)* 6 );
-    animation: walk 0.6s steps(3) infinite;
- }
-
- .skeleton_spritesheet {
-    position: absolute;
-    background: url("assets/skeleton.png") no-repeat no-repeat;
-    background-size: 100%;
-    width: calc( var(--grid-cell)* 6 );
-    height: calc( var(--grid-cell)* 6 );
-    animation: walk 0.6s steps(3) infinite;
- }
-
- .boss_spritesheet {
-    position: absolute;
-    background: url("assets/Boss.png") no-repeat no-repeat;
-    background-size: 100%;
-    width: calc( var(--grid-cell-boss)* 6);
-    height: calc( var(--grid-cell-boss)* 6 );
-    background-position-y: calc( var(--pixel-size-boss) * -96 );
-    animation: walk 0.6s steps(3) infinite;
- }
-
- .ghost_spritesheet {
-    position: absolute;
-    background: url("assets/ghost.png") no-repeat no-repeat;
-    background-size: 100%;
-    width: calc( var(--grid-cell)* 6 );
-    height: calc( var(--grid-cell)* 6 );
-    animation: walk 0.6s steps(3) infinite;
- }
- /*
-    for move use later
- */
- .ghost[facing="right"] .ghost_spritesheet {
-    background-position-y: calc( var(--pixel-size) * -64 );
- }
-
- .ghost[facing="up"] .ghost_spritesheet {
-    background-position-y: calc( var(--pixel-size) * -96 );
- }
- .ghost[facing="left"] .ghost_spritesheet {
-    background-position-y: calc( var(--pixel-size) * -32 );
- }
-
-
- 
- .enemy[facing="right"] .skeleton_spritesheetm{
-    background-position-y: calc( var(--pixel-size) * -64 );
- }
-.enemy[facing="up"] .skeleton_spritesheet {
-    background-position-y: calc( var(--pixel-size) * -96 );
-}
-.enemy[facing="left"] .skeleton_spritesheet {
-    background-position-y: calc( var(--pixel-size) * -32 );
-}
-
-.character2[facing="right"] .character2_spritesheet {
-    background-position-y: calc( var(--pixel-size) * -64 );
- }
- .character2[facing="up"] .character2_spritesheet{
-    background-position-y: calc( var(--pixel-size) * -96 );
- }
- .character2[facing="left"] .character2_spritesheet{
-    background-position-y: calc( var(--pixel-size) * -32 );
- }
- .character2[walking="true"] .character2_spritesheet {
-    animation: walk 0.6s steps(3) infinite; 
- }
-
- .character[facing="right"] .character_spritesheet {
-    background-position-y: calc( var(--pixel-size) * -64 );
- }
- .character[facing="up"] .character_spritesheet{
-    background-position-y: calc( var(--pixel-size) * -96 );
- }
- .character[facing="left"] .character_spritesheet{
-    background-position-y: calc( var(--pixel-size) * -32 );
- }
- .character[walking="true"] .character_spritesheet {
-    animation: walk 0.6s steps(3) infinite; 
- }
- 
- @keyframes walk {
-   from {
-     transform: translate3d(0%,0%,0);
-   }
-   to {
-     transform: translate3d(-100%,0%,0);
-   }
- }
- .health-bar-boss{
-    width: calc(var(--grid-cell-boss)* 2);
-    height: 35px;
-    background-color: #ffffff;
-    position: absolute;
-    top: calc(var(--grid-cell)* 5.8);
-    left: -5px;
-    border: 2px solid black;
-    display: flex;
-    flex-direction: row;
- }
  .health-bar{
-    width: calc(var(--grid-cell)* 2);
-    height: 35px;
-    background-color: #ffffff;
-    position: absolute;
-    top: 120px;
-    left: -5px;
+    width: calc(var(--grid-cell)* 10);
+    height: 16px;
+    background-color: red;
+    position: relative;
     border: 2px solid black;
     display: flex;
     flex-direction: row;
@@ -235,21 +79,10 @@ UCID: 30097912
 .health-fill{
     height: 100%;
     width: 100%;
-    background-color: #00ff00;;
+    background-color: green;;
     transition: width 0.3s;
 }
 
-.health-fill.low {
-    background-color: #ff0000; 
-}
-
-.health-fill.medium {
-    background-color: #ffc400; 
-}
-
-.health-fill.high {
-    background-color: #00ff00;
-}
 
 #weaponP1 {
     position: absolute;

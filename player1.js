@@ -8,7 +8,7 @@ UCID: 30097912
 player class will include things such as their health, attack, defense, etc, and current x, y position, boolean is invicinble for invicibility frames.
 */
 class Player{
-    constructor(health, attack, defense, x, y, isInvincible, context, image){
+    constructor(health, attack, defense, x, y, isInvincible, context, image, id){
         this.health = health;
         this.attack = attack;
         this.defense = defense;
@@ -23,7 +23,8 @@ class Player{
         this.elapsed = 0;
         this.moving = false;
         this.direction = 0;
-    }
+        this.id = id;
+    }   
     //function to move player
     move(x, y){
         this.x = x;
@@ -143,7 +144,7 @@ Intialize possible buff's array
 enemy class, include things such as health, attack, defense, etc, and current x, y position.
 */
 class Enemy{
-    constructor(maxHealth, health, attack, defense, x, y, image, context){
+    constructor(maxHealth, health, attack, defense, x, y, image, context, group){
         this.health = health;
         this.attack = attack;
         this.defense = defense;
@@ -158,6 +159,7 @@ class Enemy{
         this.moving = true;
         this.elapsed = 0;
         this.maxHealth = maxHealth;
+        this.group = group;
     }
     //function to move enemy
     moveTowardsPlayer(player, boundaries) {
@@ -242,7 +244,7 @@ class Enemy{
         }
         this.moving = canMove;   
 
-        detectCollisionPlayerEnemy(player1, this);
+        detectCollisionPlayerEnemy(player, this);
     }
     draw() {
         this.context.drawImage(
@@ -256,6 +258,17 @@ class Enemy{
             this.image.width/2,
             this.image.height/2, 
         );
+        // c2.drawImage(
+        //     this.image,
+        //     this.animationFrame * this.image.width/3,
+        //     this.direction * this.image.height/4 + 0.3,
+        //     this.image.width/3,
+        //     this.image.height/4, 
+        //     this.x, 
+        //     this.y,
+        //     this.image.width/2,
+        //     this.image.height/2, 
+        // );
         
 
         const healthBarWidth = this.width* (this.maxHealth / 50); 
@@ -283,6 +296,7 @@ class Enemy{
     }
 
 }
+
 
 
 /*
@@ -316,15 +330,15 @@ class wave{
 
 const canvasp1 = document.getElementById('canvasp1');
 const c1 = canvasp1.getContext('2d');
-const canvasp2 = document.getElementById('canvasp2');
-const c2 = canvasp2.getContext('2d');
+// const canvasp2 = document.getElementById('canvasp2');
+// const c2 = canvasp2.getContext('2d');
 
 canvasp1.width = 700;
 canvasp1.height = 700;
 
 
-canvasp2.width = 700;
-canvasp2.height = 700;
+// canvasp2.width = 700;
+// canvasp2.height = 700;
 
 
 const image = new Image();
@@ -332,6 +346,9 @@ image.src = 'assets/map.png';
 
 const p1Image = new Image();
 p1Image.src = 'assets/hero.png';
+
+// const p2Image = new Image();
+// p2Image.src = 'assets/hero2.png';
 
 const skeletonImage = new Image();
 skeletonImage.src = 'assets/skeleton.png';
@@ -345,7 +362,9 @@ const offset = {
     y: -64 * 2
 }
 const p1background = new Background(offset.x, offset.y, image, c1);
-const player1 = new Player(100, 10, 10, 8 * 32, 6 * 32, false, c1, p1Image);
+// const p2background = new Background(offset.x, offset.y, image, c2);
+const player1 = new Player(100, 10, 10, 8 * 32, 6 * 32, false, c1, p1Image, 0);
+// const player2 = new Player(100, 10, 10, 8 * 32, 6 * 32, false, c2, p2Image);
 // const testEnemy = new Enemy(100, 10, 10, 4 * 32, 10 * 32, skeletonImage, c1);
 // const e = new Enemy(100, 10, 10, 2 * 32, 2 * 32, skeletonImage, c1);
 const keysPressed = {
@@ -388,7 +407,7 @@ const enemies = [];
 for(let i = 0; i < 10; i++) {
     const x = Math.floor(Math.random() * 10) * 64 + offset.x;
     const y = Math.floor(Math.random() * 10) * 64 + offset.y
-    enemies.push(new Enemy(30, 30, 10, 10, x, y, skeletonImage, c1));
+    enemies.push(new Enemy(30, 30, 10, 10, x, y, skeletonImage, c1, enemies));
 }
 // enemies.push(e);
 // enemies.push(testEnemy);
@@ -408,7 +427,9 @@ function gameLoop() {
     window.requestAnimationFrame(gameLoop);
     p1background.draw();
     // testBoundary.draw();
+    // p2background.draw()
     player1.draw();
+    // player2.draw();
     enemies.forEach(enemy => {
         enemy.moveTowardsPlayer(player1, boundaries);
         enemy.draw();
@@ -433,7 +454,7 @@ function gameLoop() {
     boundaries.forEach(boundary => {
         boundary.draw();
     });
-    c2.drawImage(image, -(135*16), -(45*16));
+    // c2.drawImage(image, -(135*16), -(45*16));
     // if(detectCollisionEntityWall(player1, testBoundary)) {
     //     console.log('collision');
     // }
@@ -578,6 +599,13 @@ change the player health bar visual aswell
 */
 function decreasePlayerHealth(player){
     player.health -= 10;
+    const healthPercentage = player.health/100
+    const healthBar = document.getElementById(`p${player.id}Hp`);
+    const healthFill = healthBar.querySelector('.health-fill');
+
+    if (healthFill) {
+        healthFill.style.width = (healthPercentage * 100) + '%';
+    }
 }
 function detectCollisionEntityEntity (player, enemy) {
     return(player.x + player.width >= enemy.x &&
@@ -601,8 +629,8 @@ function detectCollisionPlayerEnemy(player, enemy){
     } else {
         if (detectCollisionEntityEntity(player, enemy)) {
             decreasePlayerHealth(player);
-            // console.log('hit');
             player.isInvincible = true;
+            console.log(player.health);
             setTimeout(() => {
                 player.isInvincible = false;
             }, 1000);
@@ -624,9 +652,9 @@ should also decrement enemys left in the wave
 should check if the wave is finished using the method in the wave class
 */
 function enemyDefeated(enemy){
-    const index = enemies.indexOf(enemy);
+    const index = enemy.group.indexOf(enemy);
     if (index !== -1) {
-        enemies.splice(index, 1);
+        enemy.group.splice(index, 1);
     }
 }
 /*
@@ -669,8 +697,6 @@ function detectCollisionPlayerSwordEnemy(player, enemy) {
         swordX + swordWidth > enemyX && 
         swordY < enemyY + enemyHeight && 
         swordY + swordHeight > enemyY) {
-        // Collision detected, decrease enemy health
-        console.log('hit');
         decreaseEnemyHealth(enemy);
     }
 }
