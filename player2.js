@@ -8,7 +8,7 @@ const p2Image = new Image();
 p2Image.src = 'assets/hero2.png';
 
 const p2Offset = {
-    x: -64 * 40,
+    x: -64 * 44,
     y: -64 * 26
 }
 

@@ -358,12 +358,12 @@ slashImage.src = 'assets/swordSlash.png';
 
 
 const offset = {
-    x: -64 * 2,
-    y: -64 * 2
+    x: -64 * 4,
+    y: -64 * 4
 }
 const p1background = new Background(offset.x, offset.y, image, c1);
 // const p2background = new Background(offset.x, offset.y, image, c2);
-const player1 = new Player(100, 10, 10, 8 * 32, 6 * 32, false, c1, p1Image, 0);
+const player1 = new Player(100, 10, 10, 12 * 32, 10 * 32, false, c1, p1Image, 0);
 // const player2 = new Player(100, 10, 10, 8 * 32, 6 * 32, false, c2, p2Image);
 // const testEnemy = new Enemy(100, 10, 10, 4 * 32, 10 * 32, skeletonImage, c1);
 // const e = new Enemy(100, 10, 10, 2 * 32, 2 * 32, skeletonImage, c1);
@@ -376,8 +376,8 @@ const keysPressed = {
 };
 
 const mapCollision = [];
-for (let i = 0; i < collisions.length; i+= 52) {
-    mapCollision.push(collisions.slice(i, i+52));
+for (let i = 0; i < collisions.length; i+= 60) {
+    mapCollision.push(collisions.slice(i, i+60));
 }
 class Boundary {
     constructor(x, y, width, height) {
