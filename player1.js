@@ -336,7 +336,7 @@ class Wave{
                     }
                 }
             }
-        } else if(this.currentWave === 2) {
+        } else if(this.currentWave == 2) {
             const spawnPoints = [];
             for (let i = 0; i < spawnpointswave2p1.length; i+= 60) {
                 spawnPoints.push(spawnpointswave2p1.slice(i, i+60));
@@ -345,8 +345,27 @@ class Wave{
             for (let i = 0; i < spawnPoints.length; i++) {
                 for (let j = 0; j < spawnPoints[i].length; j++) {
                     if (spawnPoints[i][j] === 2122) {
-                        if(counter % 3 === 0){
+                        if(counter % 2 === 0) {
                             this.p1enemies.push(new Enemy(20, 20, 10, 10, j*64 + offset.x + spawnoffsetp1.x, i*64 + offset.y + spawnoffsetp1.y, ghostImage, c1, this.p1enemies, true));
+                        } else {
+                            this.p1enemies.push(new Enemy(30, 30, 10, 10, j*64 + offset.x + spawnoffsetp1.x, i*64 + offset.y + spawnoffsetp1.y, skeletonImage, c1, this.p1enemies, false));
+                        }
+                    }
+                    counter ++;
+                }
+            }
+        }
+        else if(this.currentWave === 3) {
+            const spawnPoints = [];
+            for (let i = 0; i < spawnpointswave3p1.length; i+= 60) {
+                spawnPoints.push(spawnpointswave3p1.slice(i, i+60));
+            }
+            let counter = 0;
+            for (let i = 0; i < spawnPoints.length; i++) {
+                for (let j = 0; j < spawnPoints[i].length; j++) {
+                    if (spawnPoints[i][j] === 2122) {
+                        if(counter % 3 === 0){
+                            this.p1enemies.push(new Enemy(30, 30, 10, 10, j*64 + offset.x + spawnoffsetp1.x, i*64 + offset.y + spawnoffsetp1.y, ghostImage, c1, this.p1enemies, true));
                         } else {
                             this.p1enemies.push(new Enemy(50, 50, 10, 10, j*64 + offset.x + spawnoffsetp1.x, i*64 + offset.y + spawnoffsetp1.y, skeletonImage, c1, this.p1enemies, false));
                         }
@@ -370,10 +389,28 @@ class Wave{
                     }
                 }
             }
-        } else if (this.currentWave === 2) {
+        }  else if(this.currentWave === 2) {
             const spawnPoints = [];
             for (let i = 0; i < spawnpointswave2p2.length; i+= 60) {
                 spawnPoints.push(spawnpointswave2p2.slice(i, i+60));
+            }
+            let counter = 0;
+            for(let i = 0; i < spawnPoints.length; i++) {
+                for(let j = 0; j < spawnPoints[i].length; j++) {
+                    if(spawnPoints[i][j] === 2122) {
+                        if(counter % 2 === 0) {
+                            this.p2enemies.push(new Enemy(20, 20, 10, 10, j*64 + -64 * 44 + spawnoffsetp2.x, i*64 + -64 * 26 + spawnoffsetp2.y, ghostImage, c2, this.p2enemies, true));
+                        } else {
+                            this.p2enemies.push(new Enemy(30, 30, 10, 10, j*64 + -64 * 44 + spawnoffsetp2.x, i*64 + -64 * 26 + spawnoffsetp2.y, skeletonImage, c2, this.p2enemies, false));
+                        }
+                        counter ++;
+                    }
+                }
+            }
+        }else if (this.currentWave === 3) {
+            const spawnPoints = [];
+            for (let i = 0; i < spawnpointswave3p2.length; i+= 60) {
+                spawnPoints.push(spawnpointswave3p2.slice(i, i+60));
             }
             let counter = 0;
             for(let i = 0; i < spawnPoints.length; i++) {
