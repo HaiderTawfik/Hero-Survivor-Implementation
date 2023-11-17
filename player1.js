@@ -438,7 +438,7 @@ class Wave{
         console.log(this.enemiesLeft)
         if(this.enemiesLeft === 0){
             if(this.currentWave === 3){
-                console.log('game won')
+                window.location.href = 'victory.html';
             } else {
                 this.currentWave++;
                 console.log('wave over' + this.currentWave)
@@ -758,10 +758,12 @@ function detectCollisionPlayerEnemy(player, enemy){
         if (detectCollisionEntityEntity(player, enemy)) {
             decreasePlayerHealth(player);
             player.isInvincible = true;
-            console.log(player.health);
             setTimeout(() => {
                 player.isInvincible = false;
             }, 1000);
+        }
+        if(player.health === 0){
+            window.location.href = `gameover.html?player=${player.id+1}`;
         }
     }
 }
