@@ -13,6 +13,7 @@ const p2Offset = {
 }
 
 const p2background = new Background(p2Offset.x, p2Offset.y, image, c2);
+const p2foreground = new Background(p2Offset.x, p2Offset.y, foregroundImage, c2);
 const player2 = new Player(100, 10, 10, 8 * 32, 6 * 32, false, c2, p2Image, 1);
 
 const p2KeysPressed = {
@@ -36,7 +37,7 @@ for (let i = 0; i < mapCollision.length; i++) {
 
 // const testEnemy = new Enemy(30, 30, 30, 20, 64, 64, skeletonImage, c2, p2Enemies);
 // p2Enemies.push(testEnemy);
-const p2ItemsToMove = [p2background, ...p2Boundaries, ...wave.p2enemies, spawnoffsetp2];
+const p2ItemsToMove = [p2background, p2foreground, ...p2Boundaries, ...wave.p2enemies, spawnoffsetp2];
 let curWave = 1;
 function p2GameLoop() {
     window.requestAnimationFrame(p2GameLoop);
@@ -50,7 +51,7 @@ function p2GameLoop() {
         enemy.moveTowardsPlayer(player2, p2Boundaries);
         enemy.draw();
     });
-
+    p2foreground.draw();
     // p2Boundaries.forEach(boundary => {
     //     boundary.draw();
     // });

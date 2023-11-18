@@ -487,12 +487,16 @@ slashImage.src = 'assets/swordSlash.png';
 const ghostImage = new Image(); 
 ghostImage.src = 'assets/ghost.png';
 
+const foregroundImage = new Image();
+foregroundImage.src = 'assets/foreground.png';
+
 
 const offset = {
     x: -64 * 4,
     y: -64 * 4
 }
 const p1background = new Background(offset.x, offset.y, image, c1);
+const p1foreground = new Background(offset.x, offset.y, foregroundImage, c1);
 // const p2background = new Background(offset.x, offset.y, image, c2);
 const player1 = new Player(100, 10, 10, 12 * 32, 10 * 32, false, c1, p1Image, 0);
 // const player2 = new Player(100, 10, 10, 8 * 32, 6 * 32, false, c2, p2Image);
@@ -548,7 +552,7 @@ wave.startNextWave();
 // enemies.push(e);
 // enemies.push(testEnemy);
 // const testBoundary = new Boundary(128, 128, 64, 64);
-const itemsToMove = [p1background, ...boundaries, ...wave.p1enemies, spawnoffsetp1];
+const itemsToMove = [p1background, p1foreground, ...boundaries, ...wave.p1enemies, spawnoffsetp1];
 
 /*
 function detect collision with entity and walls
@@ -576,6 +580,7 @@ function gameLoop() {
         enemy.moveTowardsPlayer(player1, boundaries);
         enemy.draw();
     });
+    p1foreground.draw();
     // testEnemy.moveTowardsPlayer(player1, boundaries);
     // e.moveTowardsPlayer(player1, boundaries);
     // if(testEnemy.x< player1.x) {
