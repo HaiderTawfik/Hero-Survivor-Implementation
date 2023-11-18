@@ -1,42 +1,11 @@
-// const canvasp2 = document.getElementById('canvasp2');
-// const c2 = canvasp2.getContext('2d');
+/*
+Course: SENG 513
+Date October 25, 2023
+Assignment 2
+Name: Haider Tawfik
+UCID: 30097912
+*/
 
-canvasp2.width = 700;
-canvasp2.height = 700;
-
-const p2Image = new Image();
-p2Image.src = 'assets/hero2.png';
-
-const p2Offset = {
-    x: -64 * 44,
-    y: -64 * 26
-}
-
-const p2background = new Background(p2Offset.x, p2Offset.y, image, c2);
-const p2foreground = new Background(p2Offset.x, p2Offset.y, foregroundImage, c2);
-const player2 = new Player(100, 10, 10, 8 * 32, 6 * 32, false, c2, p2Image, 1);
-
-const p2KeysPressed = {
-    up: false,
-    down: false,
-    left: false,
-    right: false,
-    attack: false
-}
-
-const p2Boundaries = [];
-// wave.p2spawnEnemies();
-const p2Enemies = wave.p2enemies;
-for (let i = 0; i < mapCollision.length; i++) {
-    for (let j = 0; j < mapCollision[i].length; j++) {
-        if (mapCollision[i][j] === 1097) {
-           p2Boundaries.push(new Boundary(j*64 + p2Offset.x, i*64 + p2Offset.y, 64, 64));
-        }
-    }
-}
-
-// const testEnemy = new Enemy(30, 30, 30, 20, 64, 64, skeletonImage, c2, p2Enemies);
-// p2Enemies.push(testEnemy);
 const p2ItemsToMove = [p2background, p2foreground, ...p2Boundaries, ...wave.p2enemies, spawnoffsetp2];
 let curWave = 1;
 function p2GameLoop() {
@@ -52,10 +21,6 @@ function p2GameLoop() {
         enemy.draw();
     });
     p2foreground.draw();
-    // p2Boundaries.forEach(boundary => {
-    //     boundary.draw();
-    // });
-
     let canMove = true;
     player2.moving = false;
     if(p2KeysPressed.up) {
@@ -96,7 +61,6 @@ function p2GameLoop() {
         p2Boundaries.forEach(boundary => {
             boundary.x += 2;
             if(detectCollisionEntityWall(player2, boundary)) {
-                // console.log('collision');
                 canMove = false;
             }
             boundary.x -= 2;
@@ -113,7 +77,6 @@ function p2GameLoop() {
         p2Boundaries.forEach(boundary => {
             boundary.x -= 2;
             if(detectCollisionEntityWall(player2, boundary)) {
-                // console.log('collision');
                 canMove = false;
             }
             boundary.x += 2;
