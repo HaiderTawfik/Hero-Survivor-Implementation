@@ -19,7 +19,7 @@ The challenge was figuring out how sprite sheets worked, and how I could manipul
 
 From this, I learned how sprite sheets are laid out, and how the drawImage function can be used to manipulate what part of the sprite sheet is being drawn. From this knowledge, I was able to further understand how I could use the sprite sheet to draw out player and enemy movement based on the direction they intend to go.
 
-Having the player reach the enemy:
+Having the enemy reach the player:
 ---
 The challenge for this was that in the game there are two enemy types, one can move through walls, and the other cannot. Figuring out a way to have the enemy find a route to the player proved difficult, as despite being a tile-based map the map is constantly moving based on my implementation, therefore, I couldn’t figure out a way to use the generated collision block array to create a routing algorithm to the player, instead, I opted to make a much simpler algorithm where the enemy will make attempts to reach the x, y coordinate of the player based on their x, y, however, the enemies will stick get stuck on walls. 
 
