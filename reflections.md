@@ -5,13 +5,11 @@ Developing the map: <br>
 
 Developing player movement:<br>
     The challenge for this was understanding that the method I was using was moving the background not necessarily the player, such as understanding how I needed to move enemy entities such that when a player wants to move towards an enemy it appears as such, when in reality the enemy and the background are being manipulated to move towards the player and the player stays constant. Also understanding how to use the sprite image, its width, height, and the possible collision item's width, height, and position to detect a collision between a player and a wall, object, or enemy was difficult. 
-
     I learned how to manipulate the background environment, enemy entities, spawn points, and collision blocks whenever the player moved in order to assist in the illusion of the player moving when in reality it is just the background image moving, with the player sprite changing directions based on user input, as well as how to use the player's width and height to detect collision with enemies and boundaries based on their location, width, and height. 
 
 
 Developing custom animation for players and enemies: <br>
     The challenge was figuring out how sprite sheets worked, and how I could manipulate the drawImage() function in Javascript to use the sprite sheet to the correct sprite for the given circumstance.
-
     From this, I learned how sprite sheets are laid out, and how the drawImage function can be used to manipulate what part of the sprite sheet is being drawn. From this knowledge, I was able to further understand how I could use the sprite sheet to draw out player and enemy movement based on the direction they intend to go.
 
 Having the player reach the enemy: <br>
