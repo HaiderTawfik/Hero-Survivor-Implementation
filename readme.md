@@ -14,11 +14,7 @@ Game mechanics: This is a two-player game in which both players will have to wor
 
 
 References:
-https://pipoya.itch.io/pipoya-free-rpg-character-sprites-32x32<br>
-https://adamatomic.itch.io/jawbreaker<br>
-https://skalding.itch.io/chest-16x16-open-and-closed<br>
-https://en.wikipedia.org/wiki/File:Sword_Pixel_art_-_Radin.png<br>
-https://frosty-rabbid.itch.io/rpg-ability-icons<br>
-learned, and modified using sprite sheet animation for style from: <br>
-https://www.youtube.com/watch?v=H3Fn33lYuE0<br>
-https://codepen.io/punkydrewster713/pen/WNrXPrb<br>
+https://pipoya.itch.io/pipoya-free-rpg-character-sprites-32x32 <br>
+https://o-lobster.itch.io/simple-dungeon-crawler-16x16-pixel-pack <br>
+https://0x72.itch.io/16x16-dungeon-tileset <br>
+https://spikerman.itch.io/sword-slashes <br>
