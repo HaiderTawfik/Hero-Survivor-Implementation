@@ -18,3 +18,4 @@ https://pipoya.itch.io/pipoya-free-rpg-character-sprites-32x32 <br>
 https://o-lobster.itch.io/simple-dungeon-crawler-16x16-pixel-pack <br>
 https://0x72.itch.io/16x16-dungeon-tileset <br>
 https://spikerman.itch.io/sword-slashes <br>
+Where I learned how to implement player movement and wall collisions : https://www.youtube.com/watch?v=yP5DKzriqXA
