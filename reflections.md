@@ -15,7 +15,7 @@ I learned how to manipulate the background environment, enemy entities, spawn po
 
 Developing custom animation for players and enemies: 
 ---
-The challenge was figuring out how sprite sheets worked, and how I could manipulate the drawImage() function in Javascript to use the sprite sheet to the correct sprite for the given circumstance. <br>
+The challenge was figuring out how sprite sheets worked, and how I could manipulate the drawImage() function in Javascript to use the sprite sheet to draw the correct sprite for the given circumstance. <br>
 
 From this, I learned how sprite sheets are laid out, and how the drawImage function can be used to manipulate what part of the sprite sheet is being drawn. From this knowledge, I was able to further understand how I could use the sprite sheet to draw out player and enemy movement based on the direction they intend to go.
 
